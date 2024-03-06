@@ -50,7 +50,16 @@ function Home() {
   });
 
   if (status === "pending") {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-1 items-center justify-center h-screen ">
+        <span className="loading loading-ring loading-md"></span>
+        <span className="loading loading-ring loading-md"></span>
+        <span className="loading loading-ring loading-md"></span>
+        <span className="loading loading-ring loading-md"></span>
+        <span className="loading loading-ring loading-md"></span>
+        <span className="loading loading-ring loading-md"></span>
+      </div>
+    );
   }
   if (status === "error") {
     return <div>Error: {error.message}</div>;
