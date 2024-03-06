@@ -8,12 +8,13 @@ import Login from "./pages/Login.jsx";
 import About from "./pages/About.jsx";
 import Home from "./pages/Home.jsx";
 import StallDetails from "./pages/StallDetails.jsx";
+import Landing from "./pages/Landing.jsx";
 
 const queryClient = new QueryClient({});
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Landing />,
   },
   {
     path: "/login",
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <About />,
+  },
+  {
+    path: "/stalls",
+    element: <Home />,
   },
   {
     path: "/stalls/:id",
