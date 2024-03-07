@@ -7,6 +7,7 @@ import {
 import { fs } from "../firebase";
 import { useQuery } from "@tanstack/react-query";
 import { Link, NavLink, redirect } from "react-router-dom";
+import { useRef } from "react";
 
 const getStalls = async () => {
   return useQuery({
@@ -42,7 +43,14 @@ const saveStall = () => {
   });
 };
 
+// show info
+const showInfo = (ref) => {
+  alert(ref.current.value);
+};
+
 function Home() {
+  const inputStallName = useRef();
+
   // Queries
   const { data, status, error } = useQuery({
     queryKey: ["stalls"],
@@ -197,7 +205,12 @@ function Home() {
           <h3 className="font-bold text-lg">New Stall</h3>
           <p className="py-4">Provide your stall information</p>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Stall Name" />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Stall Name"
+              ref={inputStallName}
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -249,6 +262,12 @@ function Home() {
             onClick={saveStall}
           >
             Save Stall
+          </button>
+          <button
+            className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+            onClick={() => showInfo(inputStallName)}
+          >
+            show details to submit
           </button>
 
           <div className="modal-action">

@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { fs } from "../firebase";
 import { useQuery } from "@tanstack/react-query";
 
 function StallDetails() {
+  const [addingDoc, setAddingDoc] = useState(false);
+
+  const inputStallName = useRef();
+
   const params = useParams();
   const navigate = useNavigate();
 
@@ -15,8 +19,10 @@ function StallDetails() {
   };
 
   const deleteStall = () => {
+    setAddingDoc(true);
     deleteDoc(doc(fs, "stalls", params.id)).then(() => {
-      alert("Doc deleted");
+      setAddingDoc(false);
+
       setTimeout(() => {
         try {
           navigate("/stalls");
@@ -24,7 +30,7 @@ function StallDetails() {
         } catch (error) {
           console.log(error);
         }
-      }, 2000);
+      }, 500);
     });
   };
 
@@ -116,7 +122,13 @@ function StallDetails() {
         </div>
       </div>
 
-      <button className="btn w-full my-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <button
+        onClick={deleteStall}
+        className="btn w-full my-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        <span
+          className={`${addingDoc ? "loading" : ""} loading-spinner`}
+        ></span>
         Delete Doc
       </button>
     </div>
