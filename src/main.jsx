@@ -4,6 +4,7 @@ import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
+  NavLink,
   Outlet,
   Route,
   RouterProvider,
@@ -15,15 +16,18 @@ import About from "./pages/About.jsx";
 import Home from "./pages/Home.jsx";
 import StallDetails from "./pages/StallDetails.jsx";
 import Landing from "./pages/Landing.jsx";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-const queryClient = new QueryClient({});
+const queryClient = new QueryClient();
 
 const Root = () => {
   return (
     <>
       <div className="navbar bg-base-100">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl">daisyUI</a>
+          <NavLink to={"/stalls"} className="btn btn-ghost text-xl">
+            TECHIES STALL
+          </NavLink>
         </div>
         <div className="flex-none">
           <div className="dropdown dropdown-end">
@@ -112,36 +116,18 @@ const router1 = createBrowserRouter(
       <Route index element={<Landing />} />
       <Route path="/stalls" element={<Home />} />
       <Route path="/stalls/:id" element={<StallDetails />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/login" element={<Login />} />
     </Route>
   )
 );
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Landing />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/about",
-    element: <About />,
-  },
-  {
-    path: "/stalls",
-    element: <Home />,
-  },
-  {
-    path: "/stalls/:id",
-    element: <StallDetails />,
-  },
-]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router1} />
+
+      <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>
 );

@@ -5,7 +5,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { fs } from "../firebase";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, NavLink, redirect } from "react-router-dom";
 import { useRef } from "react";
 
@@ -15,18 +15,18 @@ const getStalls = async () => {
     queryFn: async () => {
       const querySnapshot = await getDocs(collection(fs, "stalls"));
 
-      const todosData = querySnapshot.docs.map((doc) => ({
+      const stallData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      console.log(todosData);
-      return todosData;
+      return stallData;
     },
   });
 };
 
 // Saving New Stall
+
 const saveStall = () => {
   addDoc(collection(fs, "stalls"), {
     stallName: "New Stall",
@@ -51,10 +51,25 @@ const showInfo = (ref) => {
 function Home() {
   const inputStallName = useRef();
 
+  const queryClient = useQueryClient();
   // Queries
   const { data, status, error } = useQuery({
     queryKey: ["stalls"],
     queryFn: getStalls(),
+  });
+
+  // Mutations
+  const addStallMutation = useMutation({
+    mutationFn: async (newStall) => {
+      const data = await addDoc(collection(fs, "stalls"), newStall);
+      return data;
+    },
+    onSettled: (newStall) => {
+      queryClient.setQueryData(["stalls"], (oldListOfStal) => [
+        ...oldListOfStal,
+        newStall,
+      ]);
+    },
   });
 
   if (status === "pending") {
@@ -75,6 +90,36 @@ function Home() {
 
   return (
     <div className="container mx-auto px-4">
+      <div>
+        {addStallMutation.isPending ? (
+          "Adding todo..."
+        ) : (
+          <>
+            {addStallMutation.isError ? (
+              <div>An error occurred: {addStallMutation.error.message}</div>
+            ) : null}
+
+            {addStallMutation.isSuccess ? <div>Todo added!</div> : null}
+
+            <button
+              onClick={() => {
+                addStallMutation.mutate({
+                  stallName: "New Stall",
+                  vision: "New stall Vision",
+                  owner: "New Stall Owner",
+                  createdAt: serverTimestamp(),
+                  stallLocation: "San Ildefonso, Bulacan",
+                  bannerImg:
+                    "https://img.freepik.com/free-vector/new-opening-hours-sign_23-2148823326.jpg?t=st=1709694724~exp=1709698324~hmac=e5852cb43d2defe2f3a931a1260857c0e12d9d6871f550d60c841ef3a535dc44&w=740",
+                });
+              }}
+            >
+              Create Todo
+            </button>
+          </>
+        )}
+      </div>
+
       <NavLink className="btn" to={"/"}>
         Home
       </NavLink>
