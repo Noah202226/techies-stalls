@@ -64,7 +64,7 @@ function Home() {
       const data = await addDoc(collection(fs, "stalls"), newStall);
       return data;
     },
-    onSettled: (newStall) => {
+    onSuccess: (newStall) => {
       queryClient.setQueryData(["stalls"], (oldListOfStal) => [
         ...oldListOfStal,
         newStall,
@@ -130,19 +130,13 @@ function Home() {
       >
         Add Stall
       </button>
-      <label className="input input-bordered flex items-center gap-2 my-2">
-        <input
-          type="text"
-          className="grow"
-          placeholder="Search something .... (Pc Components, Hardware, Store name, Tags) "
-        />
-        <kbd className="kbd kbd-sm">⌘</kbd>
-        <kbd className="kbd kbd-sm">K</kbd>
-      </label>
-      <div className="max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 p-4 bg-gray-900 shadow-lg rounded-lg">
+
+      <div
+        className={`max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 p-4 shadow-2xl border-2 rounded-lg my-4`}
+      >
         {data?.map((stall) => (
           <Link to={"/stalls/" + stall.id} key={stall?.id}>
-            <div className="bg-gray-800 text-white p-4 h-full flex flex-col rounded-lg overflow-hidden transition-transform duration-300 transform-gpu hover:scale-105 focus:scale-105">
+            <div className="border-2 p-4 h-full flex flex-col rounded-lg overflow-hidden transition-transform duration-300 transform-gpu hover:scale-105 focus:scale-105">
               <figure className="h-40 overflow-hidden">
                 <img
                   className="object-cover w-full h-full"
@@ -157,73 +151,7 @@ function Home() {
                     <div className="badge badge-secondary">NEW</div>
                   </h2>
                   <div className="rating rating-xs rating-half">
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="rating-hidden"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-1"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-2"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-1"
-                      checked
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-2"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-1"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-2"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-1"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-2"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-1"
-                      readOnly
-                    />
-                    <input
-                      type="radio"
-                      name="rating-10"
-                      className="bg-green-500 mask mask-star-2 mask-half-2"
-                      readOnly
-                    />
+                    {/* Rating stars code */}
                   </div>
                   <p className="text-ellipsis overflow-hidden">
                     Vision: {stall?.vision}

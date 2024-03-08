@@ -50,9 +50,9 @@ function StallDetails() {
 
   const addProduct = () => {
     addDoc(collection(fs, "products"), {
-      productNameRef: productNameRef.current.value,
-      productCosRef: productCosRef.current.value,
-      productPriceRef: productPriceRef.current.value,
+      productName: productNameRef.current.value,
+      cos: parseInt(productCosRef.current.value),
+      price: parseInt(productPriceRef.current.value),
       productSourceRef: productSourceRef.current.value,
       productStallRef: params.id,
     })
@@ -99,7 +99,7 @@ function StallDetails() {
 
   return (
     <div className="max-w-screen-2xl mx-auto p-4 flex">
-      <div className="bg-white shadow-lg rounded-lg p-4 flex-grow">
+      <div className="border-4 shadow-lg rounded-lg p-4 flex-grow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <div className="mb-4">
@@ -113,14 +113,14 @@ function StallDetails() {
               <h1 className="text-2xl font-bold">
                 Stall Name {data?.stallName} - ID: {data?.id}
               </h1>
-              <p className="text-gray-500">Location: {data?.stallLocation}</p>
+              <p>Location: {data?.stallLocation}</p>
             </div>
             <div className="mb-4">
               <h2 className="text-xl font-bold">About Us</h2>
               <p>{data?.vision}</p>
             </div>
 
-            <div className="bg-gray-100 rounded-lg p-4 mb-4">
+            <div className=" rounded-lg p-4 mb-4">
               <h2 className="text-xl font-bold mb-2">Opening Hours</h2>
               <ul className="list-disc ml-4 mb-4">
                 <li>
@@ -236,8 +236,8 @@ function StallDetails() {
           </div>
         </div>
       </dialog>
-      <div className="md:col-span-1 md:ml-4 w-full">
-        <div className="bg-gray-100 rounded-lg p-4">
+      <div className="border-4 md:col-span-1 md:ml-4 w-full">
+        <div className="rounded-lg p-4">
           <h2 className="text-xl font-bold mb-2">
             Additional Information or Products
           </h2>
