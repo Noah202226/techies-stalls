@@ -9,12 +9,13 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { fs } from "../firebase";
 import { useQuery } from "@tanstack/react-query";
 
 function StallDetails() {
   const [addingDoc, setAddingDoc] = useState(false);
+  const [addProductModalVisible, setAddProductModalVisible] = useState(false);
   const [deleting, setDeletingDoc] = useState(false);
 
   const params = useParams();
@@ -49,14 +50,23 @@ function StallDetails() {
   };
 
   const addProduct = () => {
+    setAddingDoc(true);
     addDoc(collection(fs, "products"), {
       productName: productNameRef.current.value,
-      cos: parseInt(productCosRef.current.value),
-      price: parseInt(productPriceRef.current.value),
+      cos: productCosRef.current.value,
+      price: productPriceRef.current.value,
       productSourceRef: productSourceRef.current.value,
       productStallRef: params.id,
     })
-      .then(() => alert("product added"))
+      .then(() => {
+        alert("product added");
+        setAddingDoc(false);
+        productNameRef.current.value = "";
+        productCosRef.current.value = "";
+        productPriceRef.current.value = "";
+        productSourceRef.current.value = "";
+        document.getElementById("my_modal_3").close();
+      })
       .catch((e) => alert(e));
   };
   const deleteStall = () => {
@@ -196,7 +206,7 @@ function StallDetails() {
           <label className="input input-bordered flex items-center gap-2 my-2">
             Cost of Sale:
             <input
-              type="text"
+              type="number"
               className="grow"
               placeholder="0"
               ref={productCosRef}
@@ -205,7 +215,7 @@ function StallDetails() {
           <label className="input input-bordered flex items-center gap-2 my-2">
             Selling Price:
             <input
-              type="text"
+              type="number"
               className="grow"
               placeholder="0"
               ref={productPriceRef}
@@ -223,10 +233,10 @@ function StallDetails() {
 
           <div className="flex align-center justify-between my-2">
             <button
-              className="btn btn-wide btn-xs sm:btn-sm md:btn-md lg:btn-lg mr-4"
+              className={`btn btn-wide btn-xs sm:btn-sm md:btn-md lg:btn-lg mr-4`}
               onClick={addProduct}
             >
-              Save Product
+              {addingDoc ? "Saving ..." : "Save Product"}
             </button>
 
             <form method="dialog">
@@ -236,6 +246,7 @@ function StallDetails() {
           </div>
         </div>
       </dialog>
+
       <div className="border-4 md:col-span-1 md:ml-4 w-full">
         <div className="rounded-lg p-4">
           <h2 className="text-xl font-bold mb-2">
@@ -244,44 +255,59 @@ function StallDetails() {
           <div>
             <p>Cash on hand / Rotating funds: </p>
             <p>
-              Remaing Value of products:{" "}
+              Remaing Cos value of products:{" "}
               {stallProductsdata?.reduce(
-                (acc, product) => acc + product.cos,
+                (acc, product) => acc + parseInt(product.cos),
+                0
+              )}
+            </p>
+            <p>
+              Remaing Cos value of products:{" "}
+              {stallProductsdata?.reduce(
+                (acc, product) => acc + parseInt(product.price),
                 0
               )}
             </p>
           </div>
-          {/* You can open the modal using document.getElementById('ID').showModal() method */}
+          {/* You can open/close the modal using document.getElementById('ID').showModal() or .close() method */}
           <button
             className="btn"
-            onClick={() => document.getElementById("my_modal_3").showModal()}
+            onClick={() => {
+              document.getElementById("my_modal_3").showModal();
+            }}
           >
             open modal
           </button>
           <h3>Products</h3>
 
-          {stallProductsdata &&
-            stallProductsdata?.map((product) => (
-              <div key={product.id} className="card w-96 bg-base-100 shadow-xl">
-                <figure>
-                  <img
-                    src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title">
-                    {product.productName}
-                    <div className="badge badge-secondary">NEW</div>
-                  </h2>
-                  <p>If a dog chews shoes whose shoes does he choose?</p>
-                  <div className="card-actions justify-end">
-                    <div className="badge badge-outline">Fashion</div>
-                    <div className="badge badge-outline">{product.price}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+            {stallProductsdata &&
+              stallProductsdata?.map((product) => (
+                <div
+                  key={product.id}
+                  className="card w-50 bg-base-100 shadow-xl"
+                >
+                  <figure>
+                    <img
+                      src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+                      alt="Shoes"
+                    />
+                  </figure>
+                  <div className="card-body">
+                    <h2 className="card-title">
+                      {product.productName}
+                      <div className="badge badge-secondary">NEW</div>
+                    </h2>
+                    <p>If a dog chews shoes whose shoes does he choose?</p>
+                    <div className="card-actions justify-end">
+                      <div className="badge badge-outline w-full">
+                        COS: {product.cos}, SELLING: {product.price}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+          </div>
         </div>
       </div>
     </div>
