@@ -27,19 +27,25 @@ const getStalls = async () => {
 
 // Saving New Stall
 
-const saveStall = () => {
+const saveStall = (stallName, vision, owner, stallLocation, bannerImg) => {
   addDoc(collection(fs, "stalls"), {
-    stallName: "New Stall",
-    vision: "New stall Vision",
-    owner: "New Stall Owner",
+    stallName: stallName.current.value,
+    vision: vision.current.value,
+    owner: owner.current.value,
     createdAt: serverTimestamp(),
-    stallLocation: "San Ildefonso, Bulacan",
-    bannerImg:
-      "https://img.freepik.com/free-vector/new-opening-hours-sign_23-2148823326.jpg?t=st=1709694724~exp=1709698324~hmac=e5852cb43d2defe2f3a931a1260857c0e12d9d6871f550d60c841ef3a535dc44&w=740",
+    stallLocation: stallLocation.current.value,
+    bannerImg: bannerImg.current.value,
+    // "https://img.freepik.com/free-vector/new-opening-hours-sign_23-2148823326.jpg?t=st=1709694724~exp=1709698324~hmac=e5852cb43d2defe2f3a931a1260857c0e12d9d6871f550d60c841ef3a535dc44&w=740",
   }).then(() => {
     alert("Doc added.");
+    document.getElementById("my_modal_5").close();
+
     redirect("/", 300);
-    document.getElementById("my_modal_5").hidden();
+    stallName.current.value = "";
+    vision.current.value = "";
+    owner.current.value = "";
+    stallLocation.current.value = "";
+    bannerImg.current.value = "";
   });
 };
 
@@ -50,26 +56,17 @@ const showInfo = (ref) => {
 
 function Home() {
   const inputStallName = useRef();
+  const inputVision = useRef();
+  const inputOwner = useRef();
+  const inputCreatedAt = useRef();
+  const inputStallLocation = useRef();
+  const inputBannerImg = useRef();
 
   const queryClient = useQueryClient();
   // Queries
   const { data, status, error } = useQuery({
     queryKey: ["stalls"],
     queryFn: getStalls(),
-  });
-
-  // Mutations
-  const addStallMutation = useMutation({
-    mutationFn: async (newStall) => {
-      const data = await addDoc(collection(fs, "stalls"), newStall);
-      return data;
-    },
-    onSuccess: (newStall) => {
-      queryClient.setQueryData(["stalls"], (oldListOfStal) => [
-        ...oldListOfStal,
-        newStall,
-      ]);
-    },
   });
 
   if (status === "pending") {
@@ -90,36 +87,6 @@ function Home() {
 
   return (
     <div className="container mx-auto px-4">
-      <div>
-        {addStallMutation.isPending ? (
-          "Adding todo..."
-        ) : (
-          <>
-            {addStallMutation.isError ? (
-              <div>An error occurred: {addStallMutation.error.message}</div>
-            ) : null}
-
-            {addStallMutation.isSuccess ? <div>Todo added!</div> : null}
-
-            <button
-              onClick={() => {
-                addStallMutation.mutate({
-                  stallName: "New Stall",
-                  vision: "New stall Vision",
-                  owner: "New Stall Owner",
-                  createdAt: serverTimestamp(),
-                  stallLocation: "San Ildefonso, Bulacan",
-                  bannerImg:
-                    "https://img.freepik.com/free-vector/new-opening-hours-sign_23-2148823326.jpg?t=st=1709694724~exp=1709698324~hmac=e5852cb43d2defe2f3a931a1260857c0e12d9d6871f550d60c841ef3a535dc44&w=740",
-                });
-              }}
-            >
-              Create Todo
-            </button>
-          </>
-        )}
-      </div>
-
       <NavLink className="btn" to={"/"}>
         Home
       </NavLink>
@@ -199,7 +166,12 @@ function Home() {
           </label>
 
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Vision" />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Vision"
+              ref={inputVision}
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -215,7 +187,54 @@ function Home() {
           </label>
 
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Owner" />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Owner"
+              ref={inputOwner}
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-4 h-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+
+          <label className="input input-bordered flex items-center gap-2">
+            <input
+              type="text"
+              className="grow"
+              placeholder="Stall Location"
+              ref={inputStallLocation}
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-4 h-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+
+          <label className="input input-bordered flex items-center gap-2">
+            <input
+              type="text"
+              className="grow"
+              placeholder="Banner Image"
+              ref={inputBannerImg}
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -232,7 +251,15 @@ function Home() {
 
           <button
             className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-            onClick={saveStall}
+            onClick={() =>
+              saveStall(
+                inputStallName,
+                inputVision,
+                inputOwner,
+                inputStallLocation,
+                inputBannerImg
+              )
+            }
           >
             Save Stall
           </button>

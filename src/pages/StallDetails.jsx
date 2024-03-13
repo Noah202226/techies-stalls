@@ -9,7 +9,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { fs } from "../firebase";
 import { useQuery } from "@tanstack/react-query";
 
@@ -121,7 +121,7 @@ function StallDetails() {
             </div>
             <div>
               <h1 className="text-2xl font-bold">
-                Stall Name {data?.stallName} - ID: {data?.id}
+                Stall Name: {data?.stallName}
               </h1>
               <p>Location: {data?.stallLocation}</p>
             </div>
@@ -129,6 +129,17 @@ function StallDetails() {
               <h2 className="text-xl font-bold">About Us</h2>
               <p>{data?.vision}</p>
             </div>
+
+            <h2 className="text-xl font-bold mb-2 mt-4">Contact Information</h2>
+            <p>
+              <strong>Phone:</strong> 123-456-7890
+            </p>
+            <p>
+              <strong>Email:</strong> example@example.com
+            </p>
+            <p>
+              <strong>Website:</strong> www.example.com
+            </p>
 
             <div className=" rounded-lg p-4 mb-4">
               <h2 className="text-xl font-bold mb-2">Opening Hours</h2>
@@ -156,26 +167,16 @@ function StallDetails() {
                 </li>
               </ul>
             </div>
-            <h2 className="text-xl font-bold mb-2 mt-4">Contact Information</h2>
-            <p>
-              <strong>Phone:</strong> 123-456-7890
-            </p>
-            <p>
-              <strong>Email:</strong> example@example.com
-            </p>
-            <p>
-              <strong>Website:</strong> www.example.com
-            </p>
           </div>
         </div>
         <button
           onClick={deleteStall}
-          className="btn w-full my-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="btn w-full my-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
         >
           <span
             className={`${deleting ? "loading" : ""} loading-spinner`}
           ></span>
-          Delete Doc
+          Delete This Stall
         </button>
       </div>
 
@@ -250,9 +251,9 @@ function StallDetails() {
       <div className="border-4 md:col-span-1 md:ml-4 w-full">
         <div className="rounded-lg p-4">
           <h2 className="text-xl font-bold mb-2">
-            Additional Information or Products
+            Additional Information and Products
           </h2>
-          <div>
+          <div className="border-2 p-2 rounded-lg">
             <p>Cash on hand / Rotating funds: </p>
             <p>
               Remaing Cos value of products:{" "}
@@ -268,44 +269,52 @@ function StallDetails() {
                 0
               )}
             </p>
+            <p>
+              Total quantity of products in stall : {stallProductsdata?.length}
+            </p>
           </div>
+
           {/* You can open/close the modal using document.getElementById('ID').showModal() or .close() method */}
-          <button
-            className="btn"
-            onClick={() => {
-              document.getElementById("my_modal_3").showModal();
-            }}
-          >
-            open modal
-          </button>
+          <div className="flex items-center justify-end">
+            <button
+              className="btn"
+              onClick={() => {
+                document.getElementById("my_modal_3").showModal();
+              }}
+            >
+              Add Product
+            </button>
+          </div>
           <h3>Products</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
             {stallProductsdata &&
               stallProductsdata?.map((product) => (
-                <div
-                  key={product.id}
-                  className="card w-50 bg-base-100 shadow-xl"
-                >
-                  <figure>
-                    <img
-                      src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-                      alt="Shoes"
-                    />
-                  </figure>
-                  <div className="card-body">
-                    <h2 className="card-title">
-                      {product.productName}
-                      <div className="badge badge-secondary">NEW</div>
-                    </h2>
-                    <p>If a dog chews shoes whose shoes does he choose?</p>
-                    <div className="card-actions justify-end">
-                      <div className="badge badge-outline w-full">
-                        COS: {product.cos}, SELLING: {product.price}
+                <Link to={`/product/${product.id}`}>
+                  <div
+                    key={product.id}
+                    className="card w-50 bg-base-100 shadow-xl overflow-hidden transition-transform duration-300 transform-gpu hover:scale-105 focus:scale-105 cursor-pointer"
+                  >
+                    <figure>
+                      <img
+                        src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+                        alt="Shoes"
+                      />
+                    </figure>
+                    <div className="card-body">
+                      <h2 className="card-title">
+                        {product.productName}
+                        <div className="badge badge-secondary">NEW</div>
+                      </h2>
+                      <p>If a dog chews shoes whose shoes does he choose?</p>
+                      <div className="card-actions justify-end">
+                        <div className="badge badge-outline w-full">
+                          COS: {product.cos}, SELLING: {product.price}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
         </div>
