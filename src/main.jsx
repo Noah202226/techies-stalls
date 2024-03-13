@@ -40,11 +40,9 @@ const Root = () => {
   }, [theme]);
 
   const ReactQueryDevtoolsProduction = React.lazy(() =>
-    import("@tanstack/react-query-devtools/build/modern/production.js").then(
-      (d) => ({
-        default: d.ReactQueryDevtools,
-      })
-    )
+    import("@tanstack/react-query-devtools/production").then((d) => ({
+      default: d.ReactQueryDevtools,
+    }))
   );
 
   const [showDevtools, setShowDevtools] = React.useState(false);
