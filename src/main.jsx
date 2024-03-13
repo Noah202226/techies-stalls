@@ -22,7 +22,7 @@ const queryClient = new QueryClient();
 
 const Root = () => {
   const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
   );
 
   const toggleTheme = (e) => {
