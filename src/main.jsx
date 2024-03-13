@@ -38,6 +38,21 @@ const Root = () => {
     const localTheme = localStorage.getItem("theme");
     document.querySelector("html").setAttribute("data-theme", localTheme);
   }, [theme]);
+
+  const ReactQueryDevtoolsProduction = React.lazy(() =>
+    import("@tanstack/react-query-devtools/build/modern/production.js").then(
+      (d) => ({
+        default: d.ReactQueryDevtools,
+      })
+    )
+  );
+
+  const [showDevtools, setShowDevtools] = React.useState(false);
+
+  React.useEffect(() => {
+    // @ts-expect-error
+    window.toggleDevtools = () => setShowDevtools((old) => !old);
+  }, []);
   return (
     <>
       <div className="navbar bg-base-100 sticky top-0 z-50">
@@ -158,6 +173,11 @@ const Root = () => {
 
       <div>
         <Outlet />
+        {showDevtools && (
+          <React.Suspense fallback={null}>
+            <ReactQueryDevtoolsProduction />
+          </React.Suspense>
+        )}
       </div>
     </>
   );
@@ -180,7 +200,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router1} />
 
-      <ReactQueryDevtools />
+      <ReactQueryDevtools initialIsOpen />
     </QueryClientProvider>
   </React.StrictMode>
 );
