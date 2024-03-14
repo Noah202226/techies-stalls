@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 
 function StallDetails() {
   const [addingDoc, setAddingDoc] = useState(false);
-  const [addProductModalVisible, setAddProductModalVisible] = useState(false);
+
   const [deleting, setDeletingDoc] = useState(false);
 
   const params = useParams();
@@ -26,6 +26,7 @@ function StallDetails() {
   const productCosRef = useRef();
   const productPriceRef = useRef();
   const productSourceRef = useRef();
+  const productQtyRef = useRef();
   const productImageRef = useRef();
 
   const getStallData = async () => {
@@ -57,6 +58,7 @@ function StallDetails() {
       price: productPriceRef.current.value,
       productSourceRef: productSourceRef.current.value,
       productStallRef: params.id,
+      qty: parseInt(productQtyRef.current.value),
     })
       .then(() => {
         alert("product added");
@@ -65,6 +67,7 @@ function StallDetails() {
         productCosRef.current.value = "";
         productPriceRef.current.value = "";
         productSourceRef.current.value = "";
+        productQtyRef.current.value = "";
         document.getElementById("my_modal_3").close();
       })
       .catch((e) => alert(e));
@@ -205,6 +208,15 @@ function StallDetails() {
             />
           </label>
           <label className="input input-bordered flex items-center gap-2 my-2">
+            Quantity:
+            <input
+              type="number"
+              className="grow"
+              placeholder="1"
+              ref={productQtyRef}
+            />
+          </label>
+          <label className="input input-bordered flex items-center gap-2 my-2">
             Cost of Sale:
             <input
               type="number"
@@ -258,7 +270,7 @@ function StallDetails() {
             <p>
               Remaing Cos value of products:{" "}
               {stallProductsdata?.reduce(
-                (acc, product) => acc + parseInt(product.cos),
+                (acc, product) => acc + parseInt(product.cos * product.qty),
                 0
               )}
             </p>
@@ -290,11 +302,8 @@ function StallDetails() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
             {stallProductsdata &&
               stallProductsdata?.map((product) => (
-                <Link to={`/product/${product.id}`}>
-                  <div
-                    key={product.id}
-                    className="card w-50 bg-base-100 shadow-xl overflow-hidden transition-transform duration-300 transform-gpu hover:scale-105 focus:scale-105 cursor-pointer"
-                  >
+                <Link key={product.id} to={`/product/${product.id}`}>
+                  <div className="card w-50 bg-base-100 shadow-xl overflow-hidden transition-transform duration-300 transform-gpu hover:scale-105 focus:scale-105 cursor-pointer">
                     <figure>
                       <img
                         src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
@@ -304,9 +313,13 @@ function StallDetails() {
                     <div className="card-body">
                       <h2 className="card-title">
                         {product.productName}
+
                         <div className="badge badge-secondary">NEW</div>
                       </h2>
                       <p>If a dog chews shoes whose shoes does he choose?</p>
+                      <div className="badge badge-outline w-full">
+                        QTY: {product?.qty}
+                      </div>
                       <div className="card-actions justify-end">
                         <div className="badge badge-outline w-full">
                           COS: {product.cos}, SELLING: {product.price}
